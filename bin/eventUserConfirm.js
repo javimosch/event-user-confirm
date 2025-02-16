@@ -37,8 +37,6 @@ async function main() {
     const filesToCopy = [
       'models',
       'views',
-      'public',
-      'locales',
       'server.js',
       'tailwind.config.js'
     ];
@@ -57,6 +55,32 @@ async function main() {
       }
     }
 
+    // Copy public files
+    const publicPath = path.join(targetDir, 'public');
+    if (!fs.existsSync(publicPath)) {
+      console.log('📂 Creating public directory...');
+      fs.mkdirSync(publicPath);
+      fs.mkdirSync(path.join(publicPath, 'css'));
+      fs.copyFileSync(
+        path.join(__dirname, '../public/css/style.css'),
+        path.join(publicPath, 'css/style.css')
+      );
+      fs.copyFileSync(
+        path.join(__dirname, '../public/icon.svg'),
+        path.join(publicPath, 'icon.svg')
+      );
+      // Generate favicon
+      require('../scripts/generate-favicon.js');
+    }
+
+    // Copy locales
+    const localesPath = path.join(targetDir, 'locales');
+    if (!fs.existsSync(localesPath)) {
+      console.log('📂 Creating locales directory...');
+      fs.mkdirSync(localesPath);
+      fs.cpSync(path.join(packageDir, 'locales'), localesPath, { recursive: true });
+    }
+
     // Create .env file if it doesn't exist
     const envPath = path.join(targetDir, '.env');
     if (!fs.existsSync(envPath)) {
@@ -64,6 +88,7 @@ async function main() {
       const envContent = `
 MONGO_URI=mongodb://localhost:27017/eventDB
 PORT=3000
+PAGE_TITLE=EUC
       `.trim();
       fs.writeFileSync(envPath, envContent);
     }
@@ -90,9 +115,14 @@ PORT=3000
       fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
     }
 
-    // Install dependencies
-    console.log('🔍 Installing dependencies...');
-    await runCommand('npm', ['install'], targetDir);
+    // Install dependencies only if node_modules doesn't exist
+    const nodeModulesPath = path.join(targetDir, 'node_modules');
+    if (!fs.existsSync(nodeModulesPath)) {
+      console.log('🔍 Installing dependencies...');
+      await runCommand('npm', ['install'], targetDir);
+    } else {
+      console.log('✅ Dependencies already installed');
+    }
 
     // Build Tailwind CSS
     console.log('🎨 Building CSS...');

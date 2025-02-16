@@ -1,6 +1,6 @@
 {
   "name": "event-user-confirm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple event attendance management system with multilingual support",
   "main": "server.js",
   "bin": "bin/eventUserConfirm.js",
@@ -17,7 +17,8 @@
     "start": "node bin/eventUserConfirm.js",
     "build:css": "tailwindcss -i ./public/css/style.css -o ./public/css/output.css",
     "prepublishOnly": "npm run build:css",
-    "dev": "concurrently \"npm run build:css -- --watch\" \"nodemon server.js\""
+    "dev": "concurrently \"npm run build:css -- --watch\" \"nodemon server.js\"",
+    "generate-favicon": "node scripts/generate-favicon.js"
   },
   "keywords": [
     "event",
@@ -40,7 +41,8 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "sharp": "^0.33.5"
   },
   "repository": {
     "type": "git",
