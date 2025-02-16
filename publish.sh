@@ -8,7 +8,7 @@ IMAGE_NAME="javimosch/event-user-confirm"
 TAG="latest"
 
 echo "🔨 Building Docker image..."
-docker build -t $IMAGE_NAME:$TAG .
+docker build -t $IMAGE_NAME:$TAG . --no-cache
 
 echo "🔑 Logging in to Docker Hub..."
 # You'll need to be logged in: docker login
