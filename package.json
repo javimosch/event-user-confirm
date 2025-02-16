@@ -1,6 +1,6 @@
 {
   "name": "event-user-confirm",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple event attendance management system with multilingual support",
   "main": "server.js",
   "bin": "bin/eventUserConfirm.js",
