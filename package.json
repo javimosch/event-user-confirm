@@ -1,17 +1,18 @@
 {
   "name": "event-user-confirm",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple event attendance management system with multilingual support",
   "main": "server.js",
   "bin": "bin/eventUserConfirm.js",
   "files": [
     "bin/",
     "models/",
-    "public/",
     "views/",
+    "public/",
     "locales/",
     "server.js",
-    "tailwind.config.js"
+    "tailwind.config.js",
+    "scripts/"
   ],
   "scripts": {
     "start": "node bin/eventUserConfirm.js",
