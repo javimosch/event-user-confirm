@@ -57,6 +57,17 @@ async function main() {
       }
     }
 
+    // Create .env file if it doesn't exist
+    const envPath = path.join(targetDir, '.env');
+    if (!fs.existsSync(envPath)) {
+      console.log('📝 Creating .env file...');
+      const envContent = `
+MONGO_URI=mongodb://localhost:27017/eventDB
+PORT=3000
+      `.trim();
+      fs.writeFileSync(envPath, envContent);
+    }
+
     // Create package.json if it doesn't exist
     const packageJsonPath = path.join(targetDir, 'package.json');
     if (!fs.existsSync(packageJsonPath)) {
@@ -67,6 +78,7 @@ async function main() {
         private: true,
         dependencies: {
           "cookie-parser": "^1.4.6",
+          "dotenv": "^16.3.1",
           "ejs": "^3.1.9",
           "express": "^4.18.2",
           "express-session": "^1.17.3",
