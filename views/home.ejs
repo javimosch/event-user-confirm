@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="<%= currentLocale %>">
+<head>
+  <meta charset="UTF-8">
+  <title><%= __('home.title') %></title>
+  <link href="/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-4">
+  <h1 class="text-2xl font-bold mb-4"><%= __('home.title') %></h1>
+  
+  <div id="masterPasswordSection" class="mb-8 p-4 bg-white shadow rounded">
+    <h2 class="text-xl font-semibold mb-4"><%= __('home.masterPassword.title') %></h2>
+    <div id="currentPassword" class="mb-4"></div>
+    <button onclick="changeMasterPassword()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+      <%= __('home.masterPassword.setButton') %>
+    </button>
+  </div>
+  
+  <h2 class="text-xl font-semibold"><%= __('home.createEvent.title') %></h2>
+  <form id="createEventForm" class="mb-8 mt-2 p-4 bg-white shadow rounded">
+    <div class="mb-4">
+      <label for="name" class="block text-gray-700"><%= __('home.createEvent.eventName') %></label>
+      <input type="text" id="name" name="name" required class="w-full border px-2 py-1 rounded">
+    </div>
+    <div class="mb-4">
+      <label for="allowGuests" class="inline-flex items-center">
+        <input type="checkbox" id="allowGuests" name="allowGuests" class="mr-2">
+        <%= __('home.createEvent.allowGuests') %>
+      </label>
+    </div>
+    <button type="submit" class="px-4 py-2 bg-green-500 text-white rounded"><%= __('home.createEvent.createButton') %></button>
+  </form>
+  
+  <h2 class="text-xl font-semibold"><%= __('home.eventList.title') %></h2>
+  <div id="eventList" class="min-w-full bg-white shadow rounded">
+    <!-- Events will be loaded here via AJAX -->
+  </div>
+  
+  <script>
+    // Handle master password in localStorage
+    let masterPassword = localStorage.getItem('eventMasterPassword');
+    console.log('📝 Using master password from storage:', masterPassword ? 'Yes' : 'No');
+    
+    // Update master password display
+    function updateMasterPasswordDisplay() {
+      const passwordDiv = document.getElementById('currentPassword');
+      if (masterPassword) {
+        passwordDiv.innerHTML = `
+          <div class="p-4 bg-green-100 border border-green-300 rounded">
+            <p class="text-green-800 mb-2"><%= __('home.masterPassword.currentPassword') %></p>
+            <p class="font-mono text-lg">${masterPassword}</p>
+          </div>
+        `;
+      } else {
+        passwordDiv.innerHTML = `
+          <div class="p-4 bg-yellow-100 border border-yellow-300 rounded">
+            <p class="text-yellow-800"><%= __('home.masterPassword.noPassword') %></p>
+          </div>
+        `;
+      }
+    }
+    
+    // Change master password
+    async function changeMasterPassword() {
+      const newPassword = prompt('Enter new master password:');
+      if (!newPassword) return;
+      
+      try {
+        console.log('🔄 Loading events with new password...');
+        masterPassword = newPassword;
+        localStorage.setItem('eventMasterPassword', masterPassword);
+        updateMasterPasswordDisplay();
+        await loadEvents();
+      } catch (err) {
+        console.error('❌ Error changing master password:', err);
+        alert('Error changing master password: ' + err.message);
+      }
+    }
+    
+    // If we got a new master password from the server, store it
+    <% if(masterPassword && !masterPassword.startsWith('?')) { %>
+      console.log('🔑 Received new master password from server');
+      masterPassword = '<%= masterPassword %>';
+      localStorage.setItem('eventMasterPassword', masterPassword);
+      console.log('💾 Stored new master password in localStorage');
+    <% } %>
+    
+    // Initialize password display
+    updateMasterPasswordDisplay();
+    loadEvents();
+    
+    // Load events via AJAX
+    async function loadEvents() {
+      try {
+        console.log('🔄 Loading events...');
+        const response = await fetch('/event/list', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ password: masterPassword })
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to load events');
+        }
+        
+        const events = await response.json();
+        const eventList = document.getElementById('eventList');
+        
+        if (events.length === 0) {
+          eventList.innerHTML = `
+            <div class="p-4 text-gray-500">
+              <%= __('home.eventList.noEvents') %>
+            </div>
+          `;
+          return;
+        }
+        
+        eventList.innerHTML = events.map(event => `
+          <div class="border-b last:border-b-0 p-4">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <div class="flex items-center">
+                  <h3 class="text-lg font-semibold" id="event-name-${event.slug}">${event.name}</h3>
+                  <button onclick="editEventName('${event.slug}', '${event.name}')" 
+                          class="ml-2 text-gray-500 hover:text-gray-700"
+                          title="<%= __('home.eventList.editName') %>">
+                    ✏️
+                  </button>
+                </div>
+                <p class="text-sm text-gray-600">
+                  <a href="/event/${event.slug}/stats" class="text-blue-600 hover:text-blue-800">
+                    <%= __('common.viewStats') %>
+                  </a>
+                </p>
+              </div>
+              <div class="text-right text-sm">
+                <p>URL: <a href="/event/${event.slug}/yes" class="text-blue-600 hover:text-blue-800">/event/${event.slug}/yes</a></p>
+                <p>URL: <a href="/event/${event.slug}/no" class="text-blue-600 hover:text-blue-800">/event/${event.slug}/no</a></p>
+              </div>
+            </div>
+            
+            <div class="mt-4">
+              <div class="flex items-center justify-between mb-4">
+                <label class="inline-flex items-center">
+                  <input type="checkbox" 
+                         class="form-checkbox"
+                         ${event.allowGuests ? 'checked' : ''}
+                         onchange="toggleAllowGuests('${event.slug}', this.checked)"
+                         data-event-slug="${event.slug}">
+                  <span class="ml-2"><%= __('home.createEvent.allowGuests') %></span>
+                </label>
+              </div>
+
+              ${event.attendees && event.attendees.length > 0 ? `
+                <div class="text-sm">
+                  <div class="font-medium mb-2"><%= __('home.eventList.attendees.title') %></div>
+                  <ul class="space-y-2">
+                    ${event.attendees.map(attendee => `
+                      <li class="flex items-center justify-between bg-gray-50 p-2 rounded">
+                        <span class="${attendee.going ? 'text-green-600' : 'text-red-600'}">
+                          ${attendee.email}
+                          ${attendee.going && attendee.guestNumber > 0 ? 
+                            `<span class="text-gray-500">(+${attendee.guestNumber} <%= __('home.eventList.attendees.guests') %>)</span>` 
+                            : ''}
+                        </span>
+                        <button onclick="removeAttendee('${event.slug}', '${attendee.email}')" 
+                                class="text-red-500 hover:text-red-700 px-2 py-1 rounded">
+                          <%= __('home.eventList.attendees.remove') %>
+                        </button>
+                      </li>
+                    `).join('')}
+                  </ul>
+                </div>
+              ` : `
+                <div class="text-sm text-gray-500">
+                  <%= __('home.eventList.attendees.none') %>
+                </div>
+              `}
+              
+              <div class="mt-4 text-right">
+                <button onclick="deleteEvent('${event.slug}')"
+                        class="text-red-500 hover:text-red-700 px-3 py-1 rounded border border-red-300 hover:border-red-500 ${event.attendees && event.attendees.length > 0 ? 'opacity-50 cursor-not-allowed' : ''}"
+                        ${event.attendees && event.attendees.length > 0 ? 'disabled' : ''}
+                        title="${event.attendees && event.attendees.length > 0 ? '<%= __('home.eventList.cannotDelete') %>' : ''}">
+                  <%= __('home.eventList.remove') %>
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        // Add event handlers
+        document.querySelectorAll('.removeAttendeeButton').forEach(button => {
+          button.addEventListener('click', handleRemoveAttendee);
+        });
+      } catch (error) {
+        console.error('❌ Error loading events:', error);
+        document.getElementById('eventList').innerHTML = `
+          <div class="p-4 text-red-500">
+            Error loading events: ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    // Handle attendee removal
+    async function removeAttendee(eventSlug, attendeeEmail) {
+      if (!confirm('<%= __('home.eventList.attendees.confirmRemove') %>')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/event/${eventSlug}/remove-attendee`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: attendeeEmail,
+            password: masterPassword
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        loadEvents(); // Refresh the list
+      } catch (error) {
+        console.error('Error removing attendee:', error);
+        alert('Error removing attendee: ' + error.message);
+      }
+    }
+
+    // Delete event
+    async function deleteEvent(eventSlug) {
+      if (!confirm('<%= __('home.eventList.confirmDelete') %>')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/event/${eventSlug}/delete`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ password: masterPassword })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to delete event');
+        }
+
+        await loadEvents();
+      } catch (error) {
+        console.error('❌ Error deleting event:', error);
+        alert('Error deleting event: ' + error.message);
+      }
+    }
+    
+    // Edit event name function
+    async function editEventName(eventSlug, currentName) {
+      const newName = prompt('<%= __("home.eventList.enterNewName") %>', currentName);
+      if (!newName || newName === currentName) return;
+
+      try {
+        const response = await fetch(`/event/${eventSlug}/update-name`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: newName,
+            password: masterPassword
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to update event name');
+        }
+
+        // Update the name in the UI immediately
+        document.getElementById(`event-name-${eventSlug}`).textContent = newName;
+      } catch (error) {
+        console.error('❌ Error updating event name:', error);
+        alert('Error updating event name: ' + error.message);
+      }
+    }
+    
+    // Handle create event form
+    document.getElementById('createEventForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        name: document.getElementById('name').value,
+        allowGuests: document.getElementById('allowGuests').checked,
+        password: masterPassword // Send existing password if any
+      };
+      
+      try {
+        const response = await fetch('/event', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          console.log('✅ Event created successfully');
+          if (!masterPassword && result.masterPassword) {
+            console.log('🔑 Received new master password from server');
+            masterPassword = result.masterPassword;
+            localStorage.setItem('eventMasterPassword', masterPassword);
+            console.log('💾 Stored new master password in localStorage');
+          }
+          
+          document.getElementById('createEventForm').reset();
+          updateMasterPasswordDisplay();
+          await loadEvents();
+        } else {
+          throw new Error(result.error || 'Failed to create event');
+        }
+      } catch (error) {
+        console.error('❌ Error creating event:', error);
+        alert('Error creating event: ' + error.message);
+      }
+    });
+    
+    // Toggle allow guests
+    async function toggleAllowGuests(eventSlug, allowGuests) {
+      try {
+        const response = await fetch(`/event/${eventSlug}/toggle-allow-guests`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            allowGuests,
+            password: masterPassword
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(await response.text());
+        }
+
+        loadEvents(); // Refresh the list
+      } catch (error) {
+        console.error('Error toggling allow guests:', error);
+        alert('Error toggling allow guests: ' + error.message);
+      }
+    }
+  </script>
+  
+  <%- include('partials/footer') %>
+</body>
+</html>

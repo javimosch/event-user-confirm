@@ -1,0 +1,114 @@
+{
+  "common": {
+    "submit": "Soumettre",
+    "email": "Courriel :",
+    "viewStats": "Voir les statistiques",
+    "poweredBy": "Propulsé par",
+    "tool": "Un outil de",
+    "languageSelector": "Langue",
+    "languages": {
+      "en": "Anglais",
+      "fr": "Français"
+    },
+    "language": "Langue",
+    "english": "Anglais",
+    "french": "Français"
+  },
+  "home": {
+    "title": "Gestion des événements",
+    "masterPassword": {
+      "title": "Mot de passe principal",
+      "setButton": "Définir le mot de passe",
+      "currentPassword": "Voici le mot de passe principal pour gérer vos événements, gardez-le en sécurité !",
+      "noPassword": "Aucun mot de passe défini. Créez votre premier événement pour en obtenir un !"
+    },
+    "createEvent": {
+      "title": "Créer un nouvel événement",
+      "eventName": "Nom de l'événement",
+      "password": "Mot de passe principal",
+      "allowGuests": "Autoriser les invités supplémentaires",
+      "createButton": "Créer l'événement",
+      "submit": "Créer l'événement"
+    },
+    "listEvents": {
+      "title": "Vos événements",
+      "password": "Entrez le mot de passe principal",
+      "submit": "Afficher les événements",
+      "noEvents": "Aucun événement trouvé avec ce mot de passe"
+    },
+    "eventList": {
+      "title": "Vos événements",
+      "password": "Entrez le mot de passe principal",
+      "submit": "Afficher les événements",
+      "noEvents": "Aucun événement trouvé avec ce mot de passe",
+      "columns": {
+        "name": "Nom",
+        "path": "Chemin",
+        "links": "Liens",
+        "stats": "Statistiques",
+        "attendance": "Participation",
+        "action": "Action"
+      },
+      "confirmYes": "Confirmer présence",
+      "confirmNo": "Confirmer absence",
+      "viewStats": "Voir stats",
+      "going": "Présent",
+      "notGoing": "Absent",
+      "total": "Total",
+      "guests": "invités",
+      "attending": "participants",
+      "noAttendees": "Pas encore de participants",
+      "attendees": {
+        "title": "Participants",
+        "none": "Aucun participant pour le moment",
+        "guests": "invités",
+        "remove": "Supprimer",
+        "confirmRemove": "Êtes-vous sûr de vouloir supprimer ce participant ?"
+      },
+      "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet événement ?",
+      "cannotDelete": "Impossible de supprimer - a des participants",
+      "remove": "Supprimer l'événement",
+      "editName": "Modifier le nom de l'événement",
+      "enterNewName": "Entrez le nouveau nom de l'événement"
+    }
+  },
+  "confirmation": {
+    "yes": {
+      "title": "Je participe",
+      "guestNumber": "Nombre d'invités supplémentaires :",
+      "success": {
+        "title": "Participation enregistrée !",
+        "message": "Merci d'avoir confirmé votre participation."
+      }
+    },
+    "no": {
+      "title": "Je ne participe pas",
+      "success": {
+        "title": "Réponse enregistrée !",
+        "message": "Merci de nous avoir informés."
+      }
+    }
+  },
+  "stats": {
+    "title": "Statistiques de l'événement",
+    "going": {
+      "title": "Participants",
+      "additionalGuests": "invités supplémentaires"
+    },
+    "notGoing": {
+      "title": "Non participants"
+    },
+    "totalAttending": {
+      "title": "Total des participants",
+      "people": "personnes"
+    },
+    "responseRate": {
+      "title": "Taux de réponse",
+      "totalResponses": "réponses totales"
+    },
+    "actions": {
+      "confirmGoing": "Confirmer la participation",
+      "confirmNotGoing": "Confirmer la non-participation"
+    }
+  }
+}

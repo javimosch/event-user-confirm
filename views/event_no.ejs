@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="<%= currentLocale %>">
+<head>
+  <meta charset="UTF-8">
+  <title><%= __('confirmation.no.title') %> - <%= event.name %></title>
+  <link href="/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-md mx-auto mt-8">
+    <% if (typeof submitted !== 'undefined' && submitted) { %>
+      <div class="p-6 bg-red-50 rounded-lg border border-red-200 text-center">
+        <div class="text-3xl mb-2">📝</div>
+        <h2 class="text-xl font-semibold text-red-800 mb-2"><%= __('confirmation.no.success.title') %></h2>
+        <p class="text-red-600 mb-4"><%= __('confirmation.no.success.message') %></p>
+        <a href="/event/<%= event.slug %>/stats" class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+          <%= __('common.viewStats') %>
+        </a>
+      </div>
+    <% } else { %>
+      <div class="p-6 bg-white rounded shadow">
+        <h1 class="text-2xl font-bold mb-4"><%= __('confirmation.no.title') %> - <%= event.name %></h1>
+        <form action="/event/<%= event.slug %>/no" method="POST">
+          <div class="mb-4">
+            <label for="email" class="block text-gray-700"><%= __('common.email') %></label>
+            <input type="email" id="email" name="email" required class="w-full border px-2 py-1 rounded">
+          </div>
+          <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"><%= __('common.submit') %></button>
+        </form>
+      </div>
+    <% } %>
+  </div>
+  
+  <%- include('partials/footer') %>
+</body>
+</html>

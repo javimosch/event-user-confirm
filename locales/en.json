@@ -1,0 +1,113 @@
+{
+	"common": {
+		"email": "Email:",
+		"submit": "Submit",
+		"viewStats": "View Event Stats",
+		"language": "Language",
+		"english": "English",
+		"french": "French",
+		"poweredBy": "Powered by",
+		"tool": "A tool from",
+		"languageSelector": "Language",
+		"languages": {
+			"en": "English",
+			"fr": "French"
+		}
+	},
+	"home": {
+		"title": "Event Management",
+		"masterPassword": {
+			"title": "Master Password",
+			"setButton": "Set Master Password",
+			"currentPassword": "This is the master password to manage your events, keep it safe!",
+			"noPassword": "No master password set. Create your first event to get one!"
+		},
+		"createEvent": {
+			"title": "Create New Event",
+			"eventName": "Event Name",
+			"password": "Master Password",
+			"allowGuests": "Allow Additional Guests",
+			"createButton": "Create Event"
+		},
+		"listEvents": {
+			"title": "Your Events",
+			"password": "Enter Master Password",
+			"submit": "Show Events",
+			"noEvents": "No events found with this password"
+		},
+		"eventList": {
+			"title": "Event List",
+			"columns": {
+				"name": "Name",
+				"path": "Path",
+				"links": "Links",
+				"stats": "Stats",
+				"attendance": "Attendance",
+				"action": "Action"
+			},
+			"confirmYes": "Confirm Yes",
+			"confirmNo": "Confirm No",
+			"viewStats": "View Stats",
+			"going": "Going",
+			"notGoing": "Not Going",
+			"total": "Total",
+			"guests": "guests",
+			"attending": "attending",
+			"noAttendees": "No attendees yet",
+			"cannotDelete": "Cannot delete - has attendees",
+			"remove": "Remove",
+			"editName": "Edit event name",
+			"enterNewName": "Enter new event name",
+			"attendees": {
+				"title": "Attendees",
+				"none": "No attendees yet",
+				"guests": "guests",
+				"remove": "Remove",
+				"confirmRemove": "Are you sure you want to remove this attendee?"
+			},
+			"confirmDelete": "Are you sure you want to delete this event?",
+			"cannotDeleteEvent": "Cannot delete event with attendees",
+			"removeEvent": "Delete Event",
+			"noEvents": "home.eventList.noEvents"
+		}
+	},
+	"confirmation": {
+		"yes": {
+			"title": "Attending",
+			"guestNumber": "Number of Additional Guests:",
+			"success": {
+				"title": "Attendance recorded!",
+				"message": "Thank you for confirming your attendance."
+			}
+		},
+		"no": {
+			"title": "Not Attending",
+			"success": {
+				"title": "Response recorded!",
+				"message": "Thank you for letting us know."
+			}
+		}
+	},
+	"stats": {
+		"title": "Event Statistics",
+		"going": {
+			"title": "Going",
+			"additionalGuests": "additional guests"
+		},
+		"notGoing": {
+			"title": "Not Going"
+		},
+		"totalAttending": {
+			"title": "Total Attending",
+			"people": "people"
+		},
+		"responseRate": {
+			"title": "Response Rate",
+			"totalResponses": "total responses"
+		},
+		"actions": {
+			"confirmGoing": "Confirm Going",
+			"confirmNotGoing": "Confirm Not Going"
+		}
+	}
+}
